@@ -9,11 +9,27 @@ async function getuser(username)
         const {data} = await axios(apiurl +username)
 
         createusercard(data)
+        addrepostocard(username)
     }
     catch(err){
         if(err.response.status==404) createerrorcard('Not found')
     }
 
+}
+
+async function getrepos(username)
+{
+    {
+        try{
+            const {data} = await axios(apiurl +username +'/repos')
+
+            addrepostocard(data)
+        }
+        catch(err){
+            if(err.response.status==404) createerrorcard('Not found')
+        }
+
+    }
 }
 
 function createusercard(user){
@@ -30,10 +46,7 @@ function createusercard(user){
             <li>${user.public_repos}<strong>Repos </strong></li>
 
         </ul>
-        <div class="repos">
-            <a href="#" class="repo">Repo 1</a>
-            <a href="#" class="repo">Repo 2</a>
-            <a href="#" class="repo">Repo 3</a>
+        <div id="repos" class="repos">
         </div>
     </div>
 </div>`
@@ -48,6 +61,22 @@ function createerrorcard(msg)
     <h1>${msg}</h1>
     </div>`
     main.innerHTML=cardhtml
+}
+
+
+function addrepostocard(repos)
+{
+    const reposel=document.getElementById('repos')
+    repos
+        .slice(0,10)
+        .forEach(repo => {
+            const repolink=document.createElement('a')
+            repolink.classList.add('repo')
+            repolink.href=repo.html_url;
+            repolink.target='_blank'
+            repolink.innerText=repo.name
+            reposel.appendChild(repolink)
+        })
 }
 
 form.addEventListener('submit',(e)=>{
