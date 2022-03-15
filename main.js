@@ -11,7 +11,7 @@ async function getuser(username)
         createusercard(data)
     }
     catch(err){
-        console.log(err)
+        if(err.response.status==404) createerrorcard('Not found')
     }
 
 }
@@ -41,6 +41,15 @@ function createusercard(user){
 
     main.innerHTML=cardhtml
 }
+
+function createerrorcard(msg)
+{
+    const cardhtml=`<div class="card">
+    <h1>${msg}</h1>
+    </div>`
+    main.innerHTML=cardhtml
+}
+
 form.addEventListener('submit',(e)=>{
     e.preventDefault()
     const user = search.value;
